@@ -27,16 +27,22 @@ type Arrival = {
   status: "On time" | "Delayed" | "Landed";
 };
 
-// Mocked airport arrivals board
+// Mocked airport arrivals board — Vienna International (VIE), Schwechat
 const ARRIVALS: Arrival[] = [
-  { id: "a1", flight: "LH441", airline: "Lufthansa",     from: "Frankfurt (FRA)",  date: "2026-06-08", time: "14:25", terminal: "T2", status: "On time" },
-  { id: "a2", flight: "BA216", airline: "British Airways", from: "London (LHR)",    date: "2026-06-08", time: "15:10", terminal: "T3", status: "Delayed" },
-  { id: "a3", flight: "AF022", airline: "Air France",    from: "Paris (CDG)",      date: "2026-06-08", time: "15:55", terminal: "T1", status: "On time" },
-  { id: "a4", flight: "DL184", airline: "Delta",         from: "Atlanta (ATL)",    date: "2026-06-08", time: "16:30", terminal: "T4", status: "On time" },
-  { id: "a5", flight: "EK205", airline: "Emirates",      from: "Dubai (DXB)",      date: "2026-06-08", time: "17:05", terminal: "T4", status: "Landed" },
-  { id: "a6", flight: "KL643", airline: "KLM",           from: "Amsterdam (AMS)",  date: "2026-06-08", time: "17:40", terminal: "T2", status: "On time" },
-  { id: "a7", flight: "IB342", airline: "Iberia",        from: "Madrid (MAD)",     date: "2026-06-08", time: "18:15", terminal: "T1", status: "Delayed" },
-  { id: "a8", flight: "TK001", airline: "Turkish",       from: "Istanbul (IST)",   date: "2026-06-08", time: "19:00", terminal: "T3", status: "On time" },
+  { id: "a1",  flight: "OS232", airline: "Austrian Airlines", from: "Frankfurt (FRA)",  date: "2026-06-08", time: "13:50", terminal: "T3", status: "On time" },
+  { id: "a2",  flight: "LH1234", airline: "Lufthansa",        from: "Munich (MUC)",     date: "2026-06-08", time: "14:25", terminal: "T1", status: "On time" },
+  { id: "a3",  flight: "BA700", airline: "British Airways",   from: "London (LHR)",     date: "2026-06-08", time: "15:10", terminal: "T3", status: "Delayed" },
+  { id: "a4",  flight: "AF1138", airline: "Air France",       from: "Paris (CDG)",      date: "2026-06-08", time: "15:55", terminal: "T1", status: "On time" },
+  { id: "a5",  flight: "KL1843", airline: "KLM",              from: "Amsterdam (AMS)",  date: "2026-06-08", time: "16:30", terminal: "T1", status: "On time" },
+  { id: "a6",  flight: "EK127", airline: "Emirates",          from: "Dubai (DXB)",      date: "2026-06-08", time: "17:05", terminal: "T3", status: "Landed" },
+  { id: "a7",  flight: "TK1887", airline: "Turkish Airlines", from: "Istanbul (IST)",   date: "2026-06-08", time: "17:40", terminal: "T1", status: "On time" },
+  { id: "a8",  flight: "IB3170", airline: "Iberia",           from: "Madrid (MAD)",     date: "2026-06-08", time: "18:15", terminal: "T1", status: "Delayed" },
+  { id: "a9",  flight: "AZ420", airline: "ITA Airways",       from: "Rome (FCO)",       date: "2026-06-08", time: "18:45", terminal: "T1", status: "On time" },
+  { id: "a10", flight: "SU2030", airline: "Aeroflot",         from: "Zurich (ZRH)",     date: "2026-06-08", time: "19:00", terminal: "T3", status: "On time" },
+  { id: "a11", flight: "OS066", airline: "Austrian Airlines", from: "New York (JFK)",   date: "2026-06-08", time: "19:35", terminal: "T3", status: "On time" },
+  { id: "a12", flight: "QR185", airline: "Qatar Airways",     from: "Doha (DOH)",       date: "2026-06-08", time: "20:10", terminal: "T1", status: "Delayed" },
+  { id: "a13", flight: "LX1574", airline: "SWISS",            from: "Geneva (GVA)",     date: "2026-06-08", time: "20:45", terminal: "T1", status: "On time" },
+  { id: "a14", flight: "SN2901", airline: "Brussels Airlines", from: "Brussels (BRU)",  date: "2026-06-08", time: "21:15", terminal: "T1", status: "On time" },
 ];
 
 const VEHICLES = [
