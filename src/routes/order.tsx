@@ -53,6 +53,7 @@ const VEHICLES = [
 
 function OrderPage() {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [selectedArrival, setSelectedArrival] = useState<string | null>(null);
   const [vehicle, setVehicle] = useState("sedan");
   const [form, setForm] = useState({
@@ -61,12 +62,16 @@ function OrderPage() {
   });
   const [submitted, setSubmitted] = useState<null | { ref: string }>(null);
 
+  const PAGE_SIZE = 5;
   const filtered = useMemo(
     () => ARRIVALS.filter(a =>
       `${a.flight} ${a.airline} ${a.from}`.toLowerCase().includes(search.toLowerCase())
     ),
     [search]
   );
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const arrival = ARRIVALS.find(a => a.id === selectedArrival) ?? null;
 
