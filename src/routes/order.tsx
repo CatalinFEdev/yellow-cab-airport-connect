@@ -27,16 +27,22 @@ type Arrival = {
   status: "On time" | "Delayed" | "Landed";
 };
 
-// Mocked airport arrivals board
+// Mocked airport arrivals board — Vienna International (VIE), Schwechat
 const ARRIVALS: Arrival[] = [
-  { id: "a1", flight: "LH441", airline: "Lufthansa",     from: "Frankfurt (FRA)",  date: "2026-06-08", time: "14:25", terminal: "T2", status: "On time" },
-  { id: "a2", flight: "BA216", airline: "British Airways", from: "London (LHR)",    date: "2026-06-08", time: "15:10", terminal: "T3", status: "Delayed" },
-  { id: "a3", flight: "AF022", airline: "Air France",    from: "Paris (CDG)",      date: "2026-06-08", time: "15:55", terminal: "T1", status: "On time" },
-  { id: "a4", flight: "DL184", airline: "Delta",         from: "Atlanta (ATL)",    date: "2026-06-08", time: "16:30", terminal: "T4", status: "On time" },
-  { id: "a5", flight: "EK205", airline: "Emirates",      from: "Dubai (DXB)",      date: "2026-06-08", time: "17:05", terminal: "T4", status: "Landed" },
-  { id: "a6", flight: "KL643", airline: "KLM",           from: "Amsterdam (AMS)",  date: "2026-06-08", time: "17:40", terminal: "T2", status: "On time" },
-  { id: "a7", flight: "IB342", airline: "Iberia",        from: "Madrid (MAD)",     date: "2026-06-08", time: "18:15", terminal: "T1", status: "Delayed" },
-  { id: "a8", flight: "TK001", airline: "Turkish",       from: "Istanbul (IST)",   date: "2026-06-08", time: "19:00", terminal: "T3", status: "On time" },
+  { id: "a1",  flight: "OS232", airline: "Austrian Airlines", from: "Frankfurt (FRA)",  date: "2026-06-08", time: "13:50", terminal: "T3", status: "On time" },
+  { id: "a2",  flight: "LH1234", airline: "Lufthansa",        from: "Munich (MUC)",     date: "2026-06-08", time: "14:25", terminal: "T1", status: "On time" },
+  { id: "a3",  flight: "BA700", airline: "British Airways",   from: "London (LHR)",     date: "2026-06-08", time: "15:10", terminal: "T3", status: "Delayed" },
+  { id: "a4",  flight: "AF1138", airline: "Air France",       from: "Paris (CDG)",      date: "2026-06-08", time: "15:55", terminal: "T1", status: "On time" },
+  { id: "a5",  flight: "KL1843", airline: "KLM",              from: "Amsterdam (AMS)",  date: "2026-06-08", time: "16:30", terminal: "T1", status: "On time" },
+  { id: "a6",  flight: "EK127", airline: "Emirates",          from: "Dubai (DXB)",      date: "2026-06-08", time: "17:05", terminal: "T3", status: "Landed" },
+  { id: "a7",  flight: "TK1887", airline: "Turkish Airlines", from: "Istanbul (IST)",   date: "2026-06-08", time: "17:40", terminal: "T1", status: "On time" },
+  { id: "a8",  flight: "IB3170", airline: "Iberia",           from: "Madrid (MAD)",     date: "2026-06-08", time: "18:15", terminal: "T1", status: "Delayed" },
+  { id: "a9",  flight: "AZ420", airline: "ITA Airways",       from: "Rome (FCO)",       date: "2026-06-08", time: "18:45", terminal: "T1", status: "On time" },
+  { id: "a10", flight: "SU2030", airline: "Aeroflot",         from: "Zurich (ZRH)",     date: "2026-06-08", time: "19:00", terminal: "T3", status: "On time" },
+  { id: "a11", flight: "OS066", airline: "Austrian Airlines", from: "New York (JFK)",   date: "2026-06-08", time: "19:35", terminal: "T3", status: "On time" },
+  { id: "a12", flight: "QR185", airline: "Qatar Airways",     from: "Doha (DOH)",       date: "2026-06-08", time: "20:10", terminal: "T1", status: "Delayed" },
+  { id: "a13", flight: "LX1574", airline: "SWISS",            from: "Geneva (GVA)",     date: "2026-06-08", time: "20:45", terminal: "T1", status: "On time" },
+  { id: "a14", flight: "SN2901", airline: "Brussels Airlines", from: "Brussels (BRU)",  date: "2026-06-08", time: "21:15", terminal: "T1", status: "On time" },
 ];
 
 const VEHICLES = [
@@ -47,6 +53,7 @@ const VEHICLES = [
 
 function OrderPage() {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [selectedArrival, setSelectedArrival] = useState<string | null>(null);
   const [vehicle, setVehicle] = useState("sedan");
   const [form, setForm] = useState({
@@ -55,12 +62,16 @@ function OrderPage() {
   });
   const [submitted, setSubmitted] = useState<null | { ref: string }>(null);
 
+  const PAGE_SIZE = 5;
   const filtered = useMemo(
     () => ARRIVALS.filter(a =>
       `${a.flight} ${a.airline} ${a.from}`.toLowerCase().includes(search.toLowerCase())
     ),
     [search]
   );
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const arrival = ARRIVALS.find(a => a.id === selectedArrival) ?? null;
 
@@ -102,8 +113,8 @@ function OrderPage() {
       <main className="flex-1 mx-auto max-w-7xl w-full px-6 py-12">
         <div className="mb-10">
           <span className="inline-block bg-secondary text-primary px-3 py-1 text-xs font-bold uppercase tracking-widest rounded">Step 1 of 2</span>
-          <h1 className="mt-3 font-display text-4xl md:text-5xl">Book Your Airport Transfer</h1>
-          <p className="mt-2 text-muted-foreground">Pick your arriving flight, tell us where you're going, done.</p>
+          <h1 className="mt-3 font-display text-4xl md:text-5xl">Book Your Vienna Airport Transfer</h1>
+          <p className="mt-2 text-muted-foreground">Pick your arriving flight at Vienna International (VIE), Schwechat — we'll meet you at the gate.</p>
         </div>
 
         <div className="grid lg:grid-cols-5 gap-8">
@@ -112,11 +123,11 @@ function OrderPage() {
             <div className="bg-secondary text-secondary-foreground rounded-t-xl px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Plane className="w-5 h-5 text-primary" />
-                <h2 className="font-display text-xl tracking-wider">Airport Arrivals</h2>
+                <h2 className="font-display text-xl tracking-wider">VIE Arrivals — Schwechat</h2>
               </div>
               <input
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search flight, city…"
                 className="bg-white/10 placeholder-white/50 text-sm px-3 py-1.5 rounded-md outline-none focus:ring-2 focus:ring-primary"
               />
@@ -129,8 +140,8 @@ function OrderPage() {
                 <div className="col-span-2">Term.</div>
                 <div className="col-span-2">Status</div>
               </div>
-              <ul className="divide-y divide-border max-h-[460px] overflow-y-auto">
-                {filtered.map(a => {
+              <ul className="divide-y divide-border">
+                {pageItems.map(a => {
                   const active = a.id === selectedArrival;
                   return (
                     <li key={a.id}>
@@ -168,8 +179,50 @@ function OrderPage() {
                   <li className="px-4 py-8 text-center text-sm text-muted-foreground">No flights match your search.</li>
                 )}
               </ul>
+              {filtered.length > 0 && (
+                <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/40 text-xs">
+                  <span className="text-muted-foreground">
+                    Showing <span className="font-semibold text-foreground">{(currentPage - 1) * PAGE_SIZE + 1}</span>
+                    –<span className="font-semibold text-foreground">{Math.min(currentPage * PAGE_SIZE, filtered.length)}</span>
+                    {" "}of <span className="font-semibold text-foreground">{filtered.length}</span>
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 rounded-md border border-border font-semibold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:border-primary transition"
+                    >
+                      Prev
+                    </button>
+                    {Array.from({ length: pageCount }, (_, i) => i + 1).map(n => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setPage(n)}
+                        className={`h-8 w-8 rounded-md font-bold transition ${
+                          n === currentPage
+                            ? "bg-primary text-primary-foreground"
+                            : "border border-border hover:border-primary"
+                        }`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setPage(p => Math.min(pageCount, p + 1))}
+                      disabled={currentPage === pageCount}
+                      className="px-3 py-1.5 rounded-md border border-border font-semibold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:border-primary transition"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
+
 
           {/* Form */}
           <section className="lg:col-span-2">
