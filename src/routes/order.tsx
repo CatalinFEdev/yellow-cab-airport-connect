@@ -140,8 +140,8 @@ function OrderPage() {
                 <div className="col-span-2">Term.</div>
                 <div className="col-span-2">Status</div>
               </div>
-              <ul className="divide-y divide-border max-h-[460px] overflow-y-auto">
-                {filtered.map(a => {
+              <ul className="divide-y divide-border">
+                {pageItems.map(a => {
                   const active = a.id === selectedArrival;
                   return (
                     <li key={a.id}>
@@ -179,8 +179,50 @@ function OrderPage() {
                   <li className="px-4 py-8 text-center text-sm text-muted-foreground">No flights match your search.</li>
                 )}
               </ul>
+              {filtered.length > 0 && (
+                <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/40 text-xs">
+                  <span className="text-muted-foreground">
+                    Showing <span className="font-semibold text-foreground">{(currentPage - 1) * PAGE_SIZE + 1}</span>
+                    –<span className="font-semibold text-foreground">{Math.min(currentPage * PAGE_SIZE, filtered.length)}</span>
+                    {" "}of <span className="font-semibold text-foreground">{filtered.length}</span>
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 rounded-md border border-border font-semibold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:border-primary transition"
+                    >
+                      Prev
+                    </button>
+                    {Array.from({ length: pageCount }, (_, i) => i + 1).map(n => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setPage(n)}
+                        className={`h-8 w-8 rounded-md font-bold transition ${
+                          n === currentPage
+                            ? "bg-primary text-primary-foreground"
+                            : "border border-border hover:border-primary"
+                        }`}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setPage(p => Math.min(pageCount, p + 1))}
+                      disabled={currentPage === pageCount}
+                      className="px-3 py-1.5 rounded-md border border-border font-semibold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:border-primary transition"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
+
 
           {/* Form */}
           <section className="lg:col-span-2">
