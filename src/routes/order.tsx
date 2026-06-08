@@ -113,8 +113,8 @@ function OrderPage() {
       <main className="flex-1 mx-auto max-w-7xl w-full px-6 py-12">
         <div className="mb-10">
           <span className="inline-block bg-secondary text-primary px-3 py-1 text-xs font-bold uppercase tracking-widest rounded">Step 1 of 2</span>
-          <h1 className="mt-3 font-display text-4xl md:text-5xl">Book Your Airport Transfer</h1>
-          <p className="mt-2 text-muted-foreground">Pick your arriving flight, tell us where you're going, done.</p>
+          <h1 className="mt-3 font-display text-4xl md:text-5xl">Book Your Vienna Airport Transfer</h1>
+          <p className="mt-2 text-muted-foreground">Pick your arriving flight at Vienna International (VIE), Schwechat — we'll meet you at the gate.</p>
         </div>
 
         <div className="grid lg:grid-cols-5 gap-8">
@@ -123,11 +123,11 @@ function OrderPage() {
             <div className="bg-secondary text-secondary-foreground rounded-t-xl px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Plane className="w-5 h-5 text-primary" />
-                <h2 className="font-display text-xl tracking-wider">Airport Arrivals</h2>
+                <h2 className="font-display text-xl tracking-wider">VIE Arrivals — Schwechat</h2>
               </div>
               <input
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search flight, city…"
                 className="bg-white/10 placeholder-white/50 text-sm px-3 py-1.5 rounded-md outline-none focus:ring-2 focus:ring-primary"
               />
