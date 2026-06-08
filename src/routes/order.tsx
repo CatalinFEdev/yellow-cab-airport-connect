@@ -327,12 +327,18 @@ function OrderPage() {
                 <textarea rows={2} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="input resize-none" />
               </Field>
 
+              {sendError && (
+                <div className="text-sm text-destructive border border-destructive/40 bg-destructive/10 rounded-md px-3 py-2">
+                  {sendError}
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={!arrival}
+                disabled={!arrival || sending}
                 className="w-full bg-primary text-primary-foreground py-3 rounded-md font-bold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-95 transition"
               >
-                {arrival ? "Confirm Booking" : "Select a flight first"}
+                {sending ? "Sending…" : arrival ? "Confirm Booking" : "Select a flight first"}
               </button>
             </form>
           </section>
