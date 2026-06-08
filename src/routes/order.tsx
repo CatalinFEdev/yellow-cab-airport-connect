@@ -63,6 +63,9 @@ function OrderPage() {
     address: "", city: "", passengers: 1, luggage: 1, notes: "",
   });
   const [submitted, setSubmitted] = useState<null | { ref: string }>(null);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const send = useServerFn(sendOrderEmail);
 
   const PAGE_SIZE = 5;
   const filtered = useMemo(
@@ -77,12 +80,43 @@ function OrderPage() {
 
   const arrival = ARRIVALS.find(a => a.id === selectedArrival) ?? null;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!arrival) return;
+    if (!arrival || sending) return;
     const ref = "YW-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    setSubmitted({ ref });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setSending(true);
+    setSendError(null);
+    try {
+      await send({
+        data: {
+          reference: ref,
+          firstName: form.firstName,
+          lastName:  form.lastName,
+          phone:     form.phone,
+          email:     form.email,
+          address:   form.address,
+          city:      form.city,
+          passengers: form.passengers,
+          luggage:    form.luggage,
+          notes:     form.notes,
+          vehicle,
+          flight: {
+            number:   arrival.flight,
+            airline:  arrival.airline,
+            from:     arrival.from,
+            date:     arrival.date,
+            time:     arrival.time,
+            terminal: arrival.terminal,
+          },
+        },
+      });
+      setSubmitted({ ref });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      setSendError(err instanceof Error ? err.message : "Failed to send booking. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   if (submitted) {
