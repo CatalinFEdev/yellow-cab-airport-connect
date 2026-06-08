@@ -5,13 +5,13 @@
 
 const enc = new TextEncoder();
 
-async function sha256Hex(data: string | Uint8Array): Promise<string> {
-  const buf = typeof data === "string" ? enc.encode(data) : data;
+async function sha256Hex(data: string | ArrayBuffer): Promise<string> {
+  const buf = typeof data === "string" ? enc.encode(data).buffer as ArrayBuffer : data;
   const hash = await crypto.subtle.digest("SHA-256", buf);
   return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function hmac(key: ArrayBuffer | Uint8Array, data: string): Promise<ArrayBuffer> {
+async function hmac(key: ArrayBuffer, data: string): Promise<ArrayBuffer> {
   const cryptoKey = await crypto.subtle.importKey(
     "raw",
     key,
@@ -19,11 +19,11 @@ async function hmac(key: ArrayBuffer | Uint8Array, data: string): Promise<ArrayB
     false,
     ["sign"],
   );
-  return crypto.subtle.sign("HMAC", cryptoKey, enc.encode(data));
+  return crypto.subtle.sign("HMAC", cryptoKey, enc.encode(data).buffer as ArrayBuffer);
 }
 
 async function signingKey(secret: string, dateStamp: string, region: string, service: string) {
-  const kDate    = await hmac(enc.encode("AWS4" + secret), dateStamp);
+  const kDate    = await hmac(enc.encode("AWS4" + secret).buffer as ArrayBuffer, dateStamp);
   const kRegion  = await hmac(kDate, region);
   const kService = await hmac(kRegion, service);
   const kSigning = await hmac(kService, "aws4_request");
