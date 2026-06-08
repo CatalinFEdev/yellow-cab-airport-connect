@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { sendOrderEmail } from "@/lib/order.functions";
 import { Plane, Check } from "lucide-react";
 
 export const Route = createFileRoute("/order")({
