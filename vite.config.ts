@@ -6,7 +6,14 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// Serve the production build from /airport-taxi so the app lives at {dns}/airport-taxi.
+// Dev keeps the default "/" base so the Lovable preview keeps working.
+const isProd = process.env.NODE_ENV === "production";
+
 export default defineConfig({
+  vite: {
+    base: isProd ? "/airport-taxi/" : "/",
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
