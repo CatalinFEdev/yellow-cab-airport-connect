@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { sendOrderEmail } from "@/lib/order.functions";
 import { Plane, Check } from "lucide-react";
 
 export const Route = createFileRoute("/order")({
@@ -61,6 +63,9 @@ function OrderPage() {
     address: "", city: "", passengers: 1, luggage: 1, notes: "",
   });
   const [submitted, setSubmitted] = useState<null | { ref: string }>(null);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const send = useServerFn(sendOrderEmail);
 
   const PAGE_SIZE = 5;
   const filtered = useMemo(
@@ -75,12 +80,43 @@ function OrderPage() {
 
   const arrival = ARRIVALS.find(a => a.id === selectedArrival) ?? null;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!arrival) return;
+    if (!arrival || sending) return;
     const ref = "YW-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    setSubmitted({ ref });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setSending(true);
+    setSendError(null);
+    try {
+      await send({
+        data: {
+          reference: ref,
+          firstName: form.firstName,
+          lastName:  form.lastName,
+          phone:     form.phone,
+          email:     form.email,
+          address:   form.address,
+          city:      form.city,
+          passengers: form.passengers,
+          luggage:    form.luggage,
+          notes:     form.notes,
+          vehicle,
+          flight: {
+            number:   arrival.flight,
+            airline:  arrival.airline,
+            from:     arrival.from,
+            date:     arrival.date,
+            time:     arrival.time,
+            terminal: arrival.terminal,
+          },
+        },
+      });
+      setSubmitted({ ref });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      setSendError(err instanceof Error ? err.message : "Failed to send booking. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   if (submitted) {
@@ -291,12 +327,18 @@ function OrderPage() {
                 <textarea rows={2} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="input resize-none" />
               </Field>
 
+              {sendError && (
+                <div className="text-sm text-destructive border border-destructive/40 bg-destructive/10 rounded-md px-3 py-2">
+                  {sendError}
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={!arrival}
+                disabled={!arrival || sending}
                 className="w-full bg-primary text-primary-foreground py-3 rounded-md font-bold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-95 transition"
               >
-                {arrival ? "Confirm Booking" : "Select a flight first"}
+                {sending ? "Sending…" : arrival ? "Confirm Booking" : "Select a flight first"}
               </button>
             </form>
           </section>
