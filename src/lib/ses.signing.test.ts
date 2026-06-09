@@ -16,15 +16,17 @@ async function sha256Hex(data: string) {
     .join("");
 }
 
-async function hmac(key: ArrayBuffer | Uint8Array, data: string) {
+async function hmac(key: Uint8Array, data: string): Promise<Uint8Array> {
   const k = await crypto.subtle.importKey(
     "raw",
-    key,
+    key as unknown as ArrayBuffer,
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
   );
-  return new Uint8Array(await crypto.subtle.sign("HMAC", k, enc.encode(data)));
+  return new Uint8Array(
+    await crypto.subtle.sign("HMAC", k, enc.encode(data) as unknown as ArrayBuffer),
+  );
 }
 
 describe("SES SigV4 primitives", () => {

@@ -37,8 +37,7 @@ export function renderWithRouter(ui: ReactNode, initialPath = "/") {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* @ts-expect-error — test-only router instance */}
-      <RouterProvider router={router} />
+      <RouterProvider router={router as never} />
     </QueryClientProvider>
   );
 }
