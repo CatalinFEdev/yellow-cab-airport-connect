@@ -97,6 +97,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ...FONT_LINKS,
     ],
   }),
+  // Disable SSR app-wide — render only on the client (SPA mode).
+  ssr: false,
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
