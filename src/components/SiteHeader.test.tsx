@@ -4,15 +4,16 @@ import { SiteHeader } from "./SiteHeader";
 import { renderWithRouter } from "@/test/router-utils";
 
 describe("SiteHeader", () => {
-  it("renders the brand and navigation links", () => {
+  it("renders the brand and navigation links", async () => {
     render(renderWithRouter(<SiteHeader />));
-    expect(screen.getByText(/YELLOW WING/i)).toBeInTheDocument();
+    expect(await screen.findByText(/YELLOW WING/i)).toBeInTheDocument();
     expect(screen.getByText(/Airport Taxi/i)).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: /book/i }).length).toBeGreaterThan(0);
   });
 
-  it("links to the order page", () => {
+  it("links to the order page", async () => {
     render(renderWithRouter(<SiteHeader />));
+    await screen.findByText(/YELLOW WING/i);
     const orderLinks = screen
       .getAllByRole("link")
       .filter((a) => a.getAttribute("href") === "/order");
