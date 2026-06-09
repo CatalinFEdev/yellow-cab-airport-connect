@@ -1,22 +1,35 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+
+// Stub TanStack Router's <Link> with a plain anchor so we don't need a full
+// router context just to render the header.
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({ to, children, className, ...rest }: any) => (
+    <a href={typeof to === "string" ? to : "#"} className={className} {...rest}>
+      {children}
+    </a>
+  ),
+}));
+
 import { SiteHeader } from "./SiteHeader";
-import { renderWithRouter } from "@/test/router-utils";
 
 describe("SiteHeader", () => {
-  it("renders the brand and navigation links", async () => {
-    render(renderWithRouter(<SiteHeader />));
-    expect(await screen.findByText(/YELLOW WING/i)).toBeInTheDocument();
+  it("renders the brand", () => {
+    render(<SiteHeader />);
+    expect(screen.getByText(/YELLOW WING/i)).toBeInTheDocument();
     expect(screen.getByText(/Airport Taxi/i)).toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: /book/i }).length).toBeGreaterThan(0);
   });
 
-  it("links to the order page", async () => {
-    render(renderWithRouter(<SiteHeader />));
-    await screen.findByText(/YELLOW WING/i);
-    const orderLinks = screen
-      .getAllByRole("link")
-      .filter((a) => a.getAttribute("href") === "/order");
-    expect(orderLinks.length).toBeGreaterThan(0);
+  it("renders navigation links to home and order", () => {
+    render(<SiteHeader />);
+    const links = screen.getAllByRole("link");
+    const hrefs = links.map((l) => l.getAttribute("href"));
+    expect(hrefs).toContain("/");
+    expect(hrefs).toContain("/order");
+  });
+
+  it("renders a primary Book Now CTA", () => {
+    render(<SiteHeader />);
+    expect(screen.getByText(/book now/i)).toBeInTheDocument();
   });
 });
