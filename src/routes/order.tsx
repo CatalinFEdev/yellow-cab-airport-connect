@@ -372,13 +372,14 @@ function OrderPage() {
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
         {label}{required && <span className="text-destructive"> *</span>}
       </span>
       {children}
+      {error && <span className="block mt-1 text-xs text-destructive">{error}</span>}
     </label>
   );
 }
