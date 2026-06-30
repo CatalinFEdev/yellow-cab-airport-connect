@@ -255,10 +255,10 @@ function OrderPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <Field label="First name" required>
+                <Field label="First name" required error={errors.firstName}>
                   <input required value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})} className="input" />
                 </Field>
-                <Field label="Last name" required>
+                <Field label="Last name" required error={errors.lastName}>
                   <input required value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})} className="input" />
                 </Field>
               </div>
@@ -271,13 +271,14 @@ function OrderPage() {
               </Field>
 
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Phone" required>
+                <Field label="Phone" required error={errors.phone}>
                   <input required type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="input" />
                 </Field>
-                <Field label="Email">
+                <Field label="Email" error={errors.email}>
                   <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="input" />
                 </Field>
               </div>
+
 
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Passengers">
