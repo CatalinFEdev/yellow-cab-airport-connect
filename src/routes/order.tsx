@@ -312,11 +312,32 @@ function OrderPage() {
                 <textarea rows={2} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="input resize-none" />
               </Field>
 
-              {sendError && (
-                <div className="text-sm text-destructive border border-destructive/40 bg-destructive/10 rounded-md px-3 py-2">
-                  {sendError}
+              {showDemo && (
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+                  onClick={() => setShowDemo(false)}
+                >
+                  <div
+                    className="bg-card border border-border rounded-xl max-w-md w-full p-6 shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h3 className="font-display text-2xl">Demo only</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      This implementation is for demo purposes. No booking has actually been sent.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setShowDemo(false)}
+                      className="mt-5 w-full bg-primary text-primary-foreground py-2.5 rounded-md font-bold uppercase tracking-wider hover:brightness-95 transition"
+                    >
+                      Got it
+                    </button>
+                  </div>
                 </div>
               )}
+
 
               <button
                 type="submit"
