@@ -64,8 +64,24 @@ function OrderPage() {
   });
   const [submitted, setSubmitted] = useState<null | { ref: string }>(null);
   const [sending, setSending] = useState(false);
-  const [sendError, setSendError] = useState<string | null>(null);
+  const [showDemo, setShowDemo] = useState(false);
+  const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; phone?: string; email?: string }>({});
   const send = useServerFn(sendOrderEmail);
+  void send;
+
+  const NAME_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/;
+  const PHONE_RE = /^\+?[0-9\s\-()]{7,20}$/;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validate() {
+    const e: typeof errors = {};
+    if (!NAME_RE.test(form.firstName.trim())) e.firstName = "Letters only — no numbers or special characters.";
+    if (!NAME_RE.test(form.lastName.trim())) e.lastName = "Letters only — no numbers or special characters.";
+    if (!PHONE_RE.test(form.phone.trim())) e.phone = "Enter a valid phone number.";
+    if (form.email && !EMAIL_RE.test(form.email.trim())) e.email = "Enter a valid email address.";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
 
   const PAGE_SIZE = 5;
   const filtered = useMemo(
