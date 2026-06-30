@@ -96,43 +96,11 @@ function OrderPage() {
 
   const arrival = ARRIVALS.find(a => a.id === selectedArrival) ?? null;
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!arrival || sending) return;
-    const ref = "YW-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    setSending(true);
-    setSendError(null);
-    try {
-      await send({
-        data: {
-          reference: ref,
-          firstName: form.firstName,
-          lastName:  form.lastName,
-          phone:     form.phone,
-          email:     form.email,
-          address:   form.address,
-          city:      form.city,
-          passengers: form.passengers,
-          luggage:    form.luggage,
-          notes:     form.notes,
-          vehicle,
-          flight: {
-            number:   arrival.flight,
-            airline:  arrival.airline,
-            from:     arrival.from,
-            date:     arrival.date,
-            time:     arrival.time,
-            terminal: arrival.terminal,
-          },
-        },
-      });
-      setSubmitted({ ref });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (err) {
-      setSendError(err instanceof Error ? err.message : "Failed to send booking. Please try again.");
-    } finally {
-      setSending(false);
-    }
+    if (!validate()) return;
+    setShowDemo(true);
   }
 
   if (submitted) {
