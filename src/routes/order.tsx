@@ -64,8 +64,24 @@ function OrderPage() {
   });
   const [submitted, setSubmitted] = useState<null | { ref: string }>(null);
   const [sending, setSending] = useState(false);
-  const [sendError, setSendError] = useState<string | null>(null);
+  const [showDemo, setShowDemo] = useState(false);
+  const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; phone?: string; email?: string }>({});
   const send = useServerFn(sendOrderEmail);
+  void send;
+
+  const NAME_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/;
+  const PHONE_RE = /^\+?[0-9\s\-()]{7,20}$/;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validate() {
+    const e: typeof errors = {};
+    if (!NAME_RE.test(form.firstName.trim())) e.firstName = "Letters only — no numbers or special characters.";
+    if (!NAME_RE.test(form.lastName.trim())) e.lastName = "Letters only — no numbers or special characters.";
+    if (!PHONE_RE.test(form.phone.trim())) e.phone = "Enter a valid phone number.";
+    if (form.email && !EMAIL_RE.test(form.email.trim())) e.email = "Enter a valid email address.";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
 
   const PAGE_SIZE = 5;
   const filtered = useMemo(
@@ -80,43 +96,11 @@ function OrderPage() {
 
   const arrival = ARRIVALS.find(a => a.id === selectedArrival) ?? null;
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!arrival || sending) return;
-    const ref = "YW-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    setSending(true);
-    setSendError(null);
-    try {
-      await send({
-        data: {
-          reference: ref,
-          firstName: form.firstName,
-          lastName:  form.lastName,
-          phone:     form.phone,
-          email:     form.email,
-          address:   form.address,
-          city:      form.city,
-          passengers: form.passengers,
-          luggage:    form.luggage,
-          notes:     form.notes,
-          vehicle,
-          flight: {
-            number:   arrival.flight,
-            airline:  arrival.airline,
-            from:     arrival.from,
-            date:     arrival.date,
-            time:     arrival.time,
-            terminal: arrival.terminal,
-          },
-        },
-      });
-      setSubmitted({ ref });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (err) {
-      setSendError(err instanceof Error ? err.message : "Failed to send booking. Please try again.");
-    } finally {
-      setSending(false);
-    }
+    if (!validate()) return;
+    setShowDemo(true);
   }
 
   if (submitted) {
@@ -271,10 +255,10 @@ function OrderPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <Field label="First name" required>
+                <Field label="First name" required error={errors.firstName}>
                   <input required value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})} className="input" />
                 </Field>
-                <Field label="Last name" required>
+                <Field label="Last name" required error={errors.lastName}>
                   <input required value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})} className="input" />
                 </Field>
               </div>
@@ -287,13 +271,14 @@ function OrderPage() {
               </Field>
 
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Phone" required>
+                <Field label="Phone" required error={errors.phone}>
                   <input required type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="input" />
                 </Field>
-                <Field label="Email">
+                <Field label="Email" error={errors.email}>
                   <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="input" />
                 </Field>
               </div>
+
 
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Passengers">
@@ -327,11 +312,32 @@ function OrderPage() {
                 <textarea rows={2} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="input resize-none" />
               </Field>
 
-              {sendError && (
-                <div className="text-sm text-destructive border border-destructive/40 bg-destructive/10 rounded-md px-3 py-2">
-                  {sendError}
+              {showDemo && (
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+                  onClick={() => setShowDemo(false)}
+                >
+                  <div
+                    className="bg-card border border-border rounded-xl max-w-md w-full p-6 shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h3 className="font-display text-2xl">Demo only</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      This implementation is for demo purposes. No booking has actually been sent.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setShowDemo(false)}
+                      className="mt-5 w-full bg-primary text-primary-foreground py-2.5 rounded-md font-bold uppercase tracking-wider hover:brightness-95 transition"
+                    >
+                      Got it
+                    </button>
+                  </div>
                 </div>
               )}
+
 
               <button
                 type="submit"
@@ -366,13 +372,14 @@ function OrderPage() {
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
         {label}{required && <span className="text-destructive"> *</span>}
       </span>
       {children}
+      {error && <span className="block mt-1 text-xs text-destructive">{error}</span>}
     </label>
   );
 }
