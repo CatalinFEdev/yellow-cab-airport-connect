@@ -21,7 +21,7 @@ A modern airport taxi booking web app for Vienna International Airport (VIE Schw
 - AWS SES email integration (optional, see below) — `src/lib/order.functions.ts` + `src/lib/ses.server.ts`.
 - Unit tests with Vitest + Testing Library (24 tests across 6 files).
 - Production build configured to live under the subpath **`/airport-taxi/`**.
-- Favicon + app icons served from `https://cattat-sys.com/airport-taxi/`.
+- Favicon + app icons served from `https://airport-taxi.cattat-sys.com/`.
 
 ---
 
@@ -88,7 +88,7 @@ The production build is configured to be served from `https://{your-domain}/airp
 - `vite.config.ts` sets `base: '/airport-taxi/'` in production.
 - `src/router.tsx` sets `basepath: '/airport-taxi'` in production.
 
-Deploy the contents of `dist/client/` to your web server under the `/airport-taxi/` path. The favicon and PNG icons in `public/` should be deployed to `https://cattat-sys.com/airport-taxi/` (or update the `<link>` URLs in `src/routes/__root.tsx` to your own host).
+Deploy the contents of `dist/client/` to your web server under the `/airport-taxi/` path. The favicon and PNG icons in `public/` should be deployed to `https://airport-taxi.cattat-sys.com/` (or update the `<link>` URLs in `src/routes/__root.tsx` to your own host).
 
 ---
 

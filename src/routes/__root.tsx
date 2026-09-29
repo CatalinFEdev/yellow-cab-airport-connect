@@ -98,9 +98,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/x-icon", href: "https://cattat-sys.com/airport-taxi/favicon.ico" },
-      { rel: "apple-touch-icon", sizes: "180x180", href: "https://cattat-sys.com/airport-taxi/apple-touch-icon.png" },
-      { rel: "icon", type: "image/png", sizes: "512x512", href: "https://cattat-sys.com/airport-taxi/icon-512.png" },
+      { rel: "icon", type: "image/x-icon", href: "https://airport-taxi.cattat-sys.com/favicon.ico" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "https://airport-taxi.cattat-sys.com/apple-touch-icon.png" },
+      { rel: "icon", type: "image/png", sizes: "512x512", href: "https://airport-taxi.cattat-sys.com/icon-512.png" },
       ...FONT_LINKS,
     ],
   }),
